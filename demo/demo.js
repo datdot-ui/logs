@@ -45,7 +45,7 @@ function demoApp () {
         return sender => {
             recipients[name] = sender
             return (msg) => {
-                const {page, from, flow, type, file, line} = msg
+                const {page, from, flow, type, body, fn, file, line} = msg
                 // console.log( `type: ${type}, file: ${file}, line: ${line}`);
                 recipients['logs'](msg)
             }
