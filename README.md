@@ -11,6 +11,20 @@ function get ({page = 'Demo', from, flow, type, body, fn, file, line}) {
 ```
 
 In `demo/demo.js`
+#### Protocol
+```js
+function protocol (name) {
+    return sender => {
+        recipients[name] = sender
+        return (msg) => {
+            const {page, from, flow, type, file, line} = msg
+            // console.log( `type: ${type}, file: ${file}, line: ${line}`);
+            recipients['logs'](msg)
+        }
+    }
+}
+```
+#### Event handler
 ```js
 function handleClick (target) {
   recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handleClick', file, line: 28})
@@ -21,12 +35,13 @@ file is referenced `path` in node.js libary that it would be automactically chec
 const file = require('path').basename(__filename)
 ```
 
-HTML element add `onclick` function
+#### HTML element add `onclick` function
 ```js
 <button class="btn" role="button" aria-label="Click" onclick=${() => handleClick('click') }>Click</button>
 ```
 
-Define colors, it is required and added in `demo/demo.js` as CSS variables
+#### Define colors
+It is required and added in `demo/demo.js` as CSS variables
 ```css
 :root {
     --b: 0, 0%;
