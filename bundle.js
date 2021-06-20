@@ -2077,6 +2077,10 @@ const style = `
     word-break: break-all;
     white-space: pre-wrap;
 }
+:host(i-log) .log span {
+    --size: var(--size12);
+    font-size: var(--size);
+}
 :host(i-log) .info {}
 :host(i-log) .type {
     --color: var(--color-greyD9);

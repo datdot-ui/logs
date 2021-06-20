@@ -1,6 +1,6 @@
 {
   "name": "datdot-ui-logs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Show logs when trigger event via function",
   "main": "src/index.js",
   "scripts": {
