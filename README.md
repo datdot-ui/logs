@@ -100,7 +100,7 @@ It is required and added in `demo/demo.js` as CSS variables
 ```
 
 There are defined constant CSS variables for event types in `src/index.js`, this part will keep updating if need.
-```js
+```css
 :host(i-log) [aria-type="click"] {
     --color: var(--color-dark);
     --bgColor: var(--color-yellow);
