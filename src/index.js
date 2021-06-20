@@ -54,10 +54,7 @@ const style = `
 :host(i-log) .content {
     --bgColor: var(--color-dark);
     --opacity: 1;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: calc(40% - 30px);
+    width: 100%;
     height: 100%;
     font-size: var(--size12);
     color: #fff;
@@ -167,15 +164,4 @@ const style = `
     --color: var(--color-white);
 }
 :host(i-log) [aria-label="demo"] {}
-@media (max-width: 960px) {
-    :host(i-log) .content {
-        top: unset;
-        right: unset;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 30vh;
-        padding-bottom: 10px;
-    }
-}
 `

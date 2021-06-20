@@ -121,11 +121,15 @@ const css = csjs`
 }
 html {
     font-size: 62.5%;
+    height: 100%;
 }
 body {
     font-size: var(--primary-font-size);
     font-family: var(--primary-font);
     background-color: hsl( var(--primary-bgColor) );
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 button {
     --color: var(--color-black);
@@ -144,28 +148,35 @@ button:hover {
 }
 .wrap {
     display: grid;
+    height: 100%;
 }
 .container {
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: 90%;
-    justify-content: center;
-    padding: 20px 0 80px 0;
+    padding: 0 20px 20px;
 }
 [data-state="debug"] {
     grid-template-rows: auto;
-    grid-template-columns: 60vw auto;
+    grid-template-columns: 60% auto;
 }
 .actions {
     display: grid;
     grid-auto-flow: column;
     gap: 8px;
 }
+[data-state="debug"] i-log {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+}
 @media (max-width: 960px) {
     [data-state="debug"] {
-        grid-template-rows: auto;
+        grid-template-rows: 60% 40%;
         grid-template-columns: auto;
-        padding-bottom: 28vh;
+    }
+    [data-state="debug"] i-log {
+        position: inherit;
+        width: 100%;
     }
 }
 `
