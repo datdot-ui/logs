@@ -1,0 +1,35 @@
+{
+  "name": "datdot-ui-logs",
+  "version": "1.0.0",
+  "description": "Show logs when trigger event via function",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "budo demo/demo.js:bundle.js --open --live",
+    "build": "browserify demo/demo.js -o bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fionataeyang/datdot-ui-logs.git"
+  },
+  "keywords": [
+    "widget",
+    "debug",
+    "log",
+    "datdot"
+  ],
+  "author": "fionataeyang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fionataeyang/datdot-ui-logs/issues"
+  },
+  "homepage": "https://github.com/fionataeyang/datdot-ui-logs#readme",
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "budo": "^11.6.4"
+  },
+  "dependencies": {
+    "bel": "^6.0.0",
+    "csjs-inject": "^1.0.1"
+  }
+}
