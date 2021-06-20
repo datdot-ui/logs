@@ -73,7 +73,7 @@ const style = `
 }
 :host(i-log) log-list {
     display: block;
-    height: calc(100% - 34px);
+    height: calc(100% - 44px);
     overflow-y: auto;
     margin: 8px;
 }
