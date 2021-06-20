@@ -3,8 +3,16 @@
 
 Click button to trigger function about type of logs
 
-Properties in `src/index.js`
+#### Properties in `src/index.js`
 ```js
+module.exports = logs
+function logs ( protocol ) {
+    const sender = protocol ( get )
+    // define name as logs
+    sender({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', file, line: 8})
+    ...
+}
+
 function get ({page = 'Demo', from, flow, type, body, fn, file, line}) {
 ....
 }
@@ -19,6 +27,7 @@ function protocol (name) {
         return (msg) => {
             const {page, from, flow, type, file, line} = msg
             // console.log( `type: ${type}, file: ${file}, line: ${line}`);
+            // use logs as a name variable from received msg from index.js
             recipients['logs'](msg)
         }
     }
