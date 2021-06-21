@@ -1,6 +1,6 @@
 {
   "name": "datdot-ui-logs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Show logs when trigger event via function",
   "main": "src/index.js",
   "scripts": {
@@ -18,7 +18,10 @@
     "log",
     "datdot"
   ],
-  "author": "fionataeyang",
+  "author": { 
+    "name": "fionataeyang",
+    "url": "https://github.com/fionataeyang"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/fionataeyang/datdot-ui-logs/issues"

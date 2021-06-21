@@ -111,8 +111,7 @@ const style = `
     padding: 2px 10px;
     border-radius: 8px;
 }
-:host(i-log) log-list .list:last-child .type {
-}
+:host(i-log) log-list .list:last-child .type {}
 :host(i-log) .page {
     --color: var(--color-maximum-blue-green);
     display: grid;
@@ -136,6 +135,11 @@ const style = `
 :host(i-log) [aria-type="click"] {
     --color: var(--color-dark);
     --bgColor: var(--color-yellow);
+    --opacity: 1;
+}
+:host(i-log) [aria-type="triggered"] {
+    --color: var(--color-dark);
+    --bgColor: var(--color-blue-jeans);
     --opacity: 1;
 }
 :host(i-log) [aria-type="opened"] {

@@ -18,6 +18,7 @@ function demoApp () {
             <button class="btn" role="button" aria-label="Close" onclick=${() => handleClose('close') }>Close</button>
             <button class="btn" role="button" aria-label="Error" onclick=${() => handleError('error') }>Error</button>
             <button class="btn" role="button" aria-label="Warning" onclick=${() => handleWarning('warning') }>Warning</button>
+            <button class="btn" role="button" aria-label="Trigger" onclick=${() => handleTriggerEvent('trigger') }>Trigger</button>
         </div>
     </div>`
 
@@ -43,13 +44,16 @@ function demoApp () {
     function handleWarning (target) {
         recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handleError', file, line: 37})
     }
+    function handleTriggerEvent (target) {
+        recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handleTriggerEvent', file, line: 45})
+    }
     function protocol (name) {
         return sender => {
             recipients[name] = sender
             return (msg) => {
-                const {page, from, flow, type, body, fn, file, line} = msg
+                const {page, from, flow, type, body} = msg
                 // console.log( `type: ${type}, file: ${file}, line: ${line}`);
-                recipients['logs'](msg)
+                // recipients['logs'](msg)
             }
         }
     }
@@ -2091,8 +2095,7 @@ const style = `
     padding: 2px 10px;
     border-radius: 8px;
 }
-:host(i-log) log-list .list:last-child .type {
-}
+:host(i-log) log-list .list:last-child .type {}
 :host(i-log) .page {
     --color: var(--color-maximum-blue-green);
     display: grid;
@@ -2116,6 +2119,11 @@ const style = `
 :host(i-log) [aria-type="click"] {
     --color: var(--color-dark);
     --bgColor: var(--color-yellow);
+    --opacity: 1;
+}
+:host(i-log) [aria-type="triggered"] {
+    --color: var(--color-dark);
+    --bgColor: var(--color-blue-jeans);
     --opacity: 1;
 }
 :host(i-log) [aria-type="opened"] {
