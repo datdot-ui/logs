@@ -1,5 +1,5 @@
 # datdot-ui-logs
-![datdot-ui-logs-demo](https://user-images.githubusercontent.com/9526525/122678163-1e0abb80-d218-11eb-9dd3-392bf9277b11.png)
+![image](https://user-images.githubusercontent.com/9526525/122788466-efa8e100-d2e8-11eb-88af-2f9008ff24bc.png)
 
 Click button to trigger function about type of logs
 
@@ -106,6 +106,11 @@ There are defined constant CSS variables for event types in `src/index.js`, this
     --bgColor: var(--color-yellow);
     --opacity: 1;
 }
+:host(i-log) [aria-type="triggered"] {
+    --color: var(--color-dark);
+    --bgColor: var(--color-blue-jeans);
+    --opacity: 1;
+}
 :host(i-log) [aria-type="opened"] {
     --bgColor: var(--color-slate-blue);
     --opacity: 1;
@@ -125,4 +130,4 @@ There are defined constant CSS variables for event types in `src/index.js`, this
     --opacity: 1;
 }
 ```
-![image](https://user-images.githubusercontent.com/9526525/122679439-6ed0e300-d21d-11eb-8e5f-c2b7de5a119b.png)
+![image](https://user-images.githubusercontent.com/9526525/122788549-051e0b00-d2e9-11eb-89a4-b2129553fd72.png)
