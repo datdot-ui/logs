@@ -5,8 +5,13 @@ const logs = require('..')
 
 function demoApp () {
     const recipients = []
+    let isChecked = false
+    let isSelected = false
     const logList = logs( protocol('logs') )
     recipients['logs']({from: 'logs', type: 'ready', fn: 'demoApp', file, line: 9})
+    const toggle = bel`<button class="btn" role="switch" aria-label="Toggle" aria-checked="${isChecked}" onclick=${() => handleToggle('toggle') }>Toggle</button>`
+    const select = bel`<button class="btn" role="button" aria-label="Select" aria-selected="${isSelected}" onclick=${() => handleSelect('select') }>Select</button>`
+            
     const container = bel`
     <div class="${css.container}">
         <h1>Logs event</h1>
@@ -16,7 +21,7 @@ function demoApp () {
             <button class="btn" role="button" aria-label="Close" onclick=${() => handleClose('close') }>Close</button>
             <button class="btn" role="button" aria-label="Error" onclick=${() => handleError('error') }>Error</button>
             <button class="btn" role="button" aria-label="Warning" onclick=${() => handleWarning('warning') }>Warning</button>
-            <button class="btn" role="button" aria-label="Trigger" onclick=${() => handleTriggerEvent('trigger') }>Trigger</button>
+            ${toggle}${select}
         </div>
     </div>`
 
@@ -28,22 +33,35 @@ function demoApp () {
     return app
 
     function handleClick (target) {
-        recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handleClick', file, line: 28})
+        recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handleClick', file, line: 36})
+        handleTriggerEvent(target)
+    }
+    function handleTriggerEvent(target) {
+        recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handleTriggerEvent', file, line: 40})
     }
     function handleOpen (target) {
-        recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handleOpen', file, line: 31})
+        recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handleOpen', file, line: 43})
     }
     function handleClose (target) {
-        recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'closed', fn: 'handleClose', file, line: 34})
+        recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'closed', fn: 'handleClose', file, line: 46})
     }
     function handleError (target) {
-        recipients['logs']({page: 'USER', from: target, flow: 'transfer', type: 'error', fn: 'handleError', file, line: 37})
+        recipients['logs']({page: 'USER', from: target, flow: 'transfer', type: 'error', fn: 'handleError', file, line: 49})
     }
     function handleWarning (target) {
-        recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handleError', file, line: 37})
+        recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handleError', file, line: 52})
     }
-    function handleTriggerEvent (target) {
-        recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handleTriggerEvent', file, line: 45})
+    function handleToggle(target) {
+        isChecked = !isChecked
+        const type = isChecked === true ? 'checked' : 'unchecked'
+        toggle.ariaChecked = isChecked
+        recipients['logs']({page: 'JOBS', from: target, flow: 'switch/button', type, fn: 'handleToggle', file, line: 58})
+    }
+    function handleSelect (target) {
+        isSelected = !isSelected
+        const type = isSelected === true ? 'selected' : 'unselected'
+        select.ariaSelected = isSelected
+        recipients['logs']({page: 'PLANS', from: target, flow: 'date/button', type, fn: 'handleSelect', file, line: 64})
     }
     function protocol (name) {
         return sender => {
@@ -76,6 +94,8 @@ const css = csjs`
     --color-slate-blue: 248, 56%, 59%;
     --color-blue-jeans: 204, 96%, 61%;
     --color-dodger-blue: 213, 90%, 59%;
+    --color-light-green: 127, 86%, 77%;
+    --color-lime-green: 127, 100%, 40%;
     --color-slimy-green: 108, 100%, 28%;
     --color-maximum-blue-green: 180, 54%, 51%;
     --color-green-pigment: 136, 81%, 34%;
@@ -172,6 +192,10 @@ button:hover {
     right: 0;
     width: 40%;
     height: 100%;
+}
+[role="switch"][aria-checked="true"], [role="button"][aria-selected="true"] {
+    --color: var(--color-white);
+    --bgColor: var(--color-black);
 }
 @media (max-width: 960px) {
     [data-state="debug"] {

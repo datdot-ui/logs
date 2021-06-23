@@ -138,9 +138,9 @@ const style = `
     --opacity: 1;
 }
 :host(i-log) [aria-type="triggered"] {
-    --color: var(--color-dark);
+    --color: var(--color-white);
     --bgColor: var(--color-blue-jeans);
-    --opacity: 1;
+    --opacity: .5;
 }
 :host(i-log) [aria-type="opened"] {
     --bgColor: var(--color-slate-blue);
@@ -160,6 +160,25 @@ const style = `
     --bgColor: var(--color-deep-saffron);
     --opacity: 1;
 }
+:host(i-log) [aria-type="checked"] {
+    --color: var(--color-dark);
+    --bgColor: var(--color-blue-jeans);
+    --opacity: 1;
+}
+:host(i-log) [aria-type="unchecked"] {
+    --bgColor: var(--color-blue-jeans);
+    --opacity: .3;
+}
+:host(i-log) [aria-type="selected"] {
+    --color: var(--color-dark);
+    --bgColor: var(--color-lime-green);
+    --opacity: 1;
+}
+:host(i-log) [aria-type="unselected"] {
+    --bgColor: var(--color-lime-green);
+    --opacity: .25;
+}
+
 :host(i-log) log-list .list:last-child [aria-type="ready"] {
     --bgColor: var(--color-deep-black);
     --opacity: 0.3;
