@@ -85,6 +85,8 @@ const css = csjs`
     --color-deep-black: 222, 18%, 11%;
     --color-blue: 214, var(--r);
     --color-red: 358, 99%, 53%;
+    --color-amaranth-pink: 331, 86%, 78%;
+    --color-persian-rose: 323, 100%, 56%;
     --color-orange: 35, 100%, 58%;
     --color-deep-saffron: 31, 100%, 56%;
     --color-ultra-red: 348, 96%, 71%;

@@ -8,13 +8,13 @@ function logs ( protocol ) {
     const sender = protocol ( get )
     sender({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', file, line: 8})
     const ilog = document.createElement('i-log')
-    const root = ilog.attachShadow({mode: 'closed'})
+    const shadow = ilog.attachShadow({mode: 'closed'})
     const title = bel`<h4>Logs</h4>`
     const content = bel`<section class="content">${title}</section>`
     const logList = document.createElement('log-list')
-    styleSheet(root, style)
+    styleSheet(shadow, style)
     content.append(logList)
-    root.append(content)
+    shadow.append(content)
 
     document.addEventListener('DOMContentLoaded', () => {
         logList.scrollTop = logList.scrollHeight

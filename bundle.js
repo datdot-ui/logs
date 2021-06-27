@@ -87,6 +87,8 @@ const css = csjs`
     --color-deep-black: 222, 18%, 11%;
     --color-blue: 214, var(--r);
     --color-red: 358, 99%, 53%;
+    --color-amaranth-pink: 331, 86%, 78%;
+    --color-persian-rose: 323, 100%, 56%;
     --color-orange: 35, 100%, 58%;
     --color-deep-saffron: 31, 100%, 56%;
     --color-ultra-red: 348, 96%, 71%;
@@ -2016,13 +2018,13 @@ function logs ( protocol ) {
     const sender = protocol ( get )
     sender({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', file, line: 8})
     const ilog = document.createElement('i-log')
-    const root = ilog.attachShadow({mode: 'closed'})
+    const shadow = ilog.attachShadow({mode: 'closed'})
     const title = bel`<h4>Logs</h4>`
     const content = bel`<section class="content">${title}</section>`
     const logList = document.createElement('log-list')
-    styleSheet(root, style)
+    styleSheet(shadow, style)
     content.append(logList)
-    root.append(content)
+    shadow.append(content)
 
     document.addEventListener('DOMContentLoaded', () => {
         logList.scrollTop = logList.scrollHeight
