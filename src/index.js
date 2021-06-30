@@ -1,48 +1,54 @@
-const styleSheet = require('supportCSSStyleSheet')
 const bel = require('bel')
-const file = require('path').basename(__filename)
+const style_sheet = require('support-style-sheet')
+const message_maker = require('message_maker')
 
-module.exports = logs
+module.exports = i_log
 
-function logs ( protocol ) {
-    const sender = protocol ( get )
-    sender({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', file, line: 8})
-    const ilog = document.createElement('i-log')
-    const shadow = ilog.attachShadow({mode: 'closed'})
+function i_log (protocol) {
+    const send = protocol(get)
+    const make = message_maker(`${name}/ui-logs/i_log`)
+    const message = make({type: 'ready'})
+    send(message)
+    // send({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', line: 8})
+    const i_log = document.createElement('i-log')
+    const shadow = i_log.attachShadow({mode: 'closed'})
     const title = bel`<h4>Logs</h4>`
     const content = bel`<section class="content">${title}</section>`
-    const logList = document.createElement('log-list')
-    styleSheet(shadow, style)
-    content.append(logList)
+    const log_list = document.createElement('log-list')
+    style_sheet(shadow, style)
+    content.append(log_list)
     shadow.append(content)
+    document.addEventListener('DOMContentLoaded', () => { log_list.scrollTop = log_list.scrollHeight })
 
-    document.addEventListener('DOMContentLoaded', () => {
-        logList.scrollTop = logList.scrollHeight
-    })
+    return i_log
 
-    return ilog
-
-    function get ({page = 'Demo', from, flow, type, body, fn, file, line}) {
+    function get (msg) {
+        // const {page = 'Demo', from, flow, type, body, fn, file, line} = msg
+        const {head, refs, type, data, meta} = msg
         try {
-            const f = flow ? bel`<span class="flow">${flow} :: </span>` : ''
+            const to = bel`<span aria-label="to" class="to">${head[1]}</span>`
+            const data_info = bel`<span aira-label="data" class="data">${typeof data === 'object' ? JSON.stringify(data) : data}</span>`
+            const type_info = bel`<span aria-type="${type}" class="type">${type}</span>`
             var log = bel`
             <aside class="list">
-                <span aria-label=${page} class="page">${page}</span>
+                <span aria-label=${head[0]} class="from">${head[0]}</span>
                 <div class="log">
-                    <span aria-label="info" class="info">${f} ${from}</span>
-                    <span aria-type="${type}" class="type">${type}</span>
-                    <span aira-label="message" class="message">${typeof body === 'object' ? JSON.stringify(body) : body}</span>
-                    ${fn && bel`<span aria-type="${fn}" class="function">Fn: ${fn}</span>`}
+                    ${to}
+                    ${type_info}
+                    ${data_info}
                 </div>
-                <div class="file">${file} : ${line}</div>
+                <div class="file">
+                    <span>${meta.stack[0]}</span>
+                    <span>${meta.stack[1]}</span>
+                </div>
             </aside>
             `
-            logList.append(log)
-            logList.scrollTop = logList.scrollHeight
+            log_list.append(log)
+            log_list.scrollTop = log_list.scrollHeight
             
         } catch (error) {
             document.addEventListener('DOMContentLoaded', () => {
-                logList.append(log)
+                log_list.append(log)
             })
             return false
         }
@@ -101,7 +107,7 @@ const style = `
     --size: var(--size12);
     font-size: var(--size);
 }
-:host(i-log) .info {}
+:host(i-log) .to {}
 :host(i-log) .type {
     --color: var(--color-greyD9);
     --bgColor: var(--color-greyD9);
@@ -112,7 +118,7 @@ const style = `
     border-radius: 8px;
 }
 :host(i-log) log-list .list:last-child .type {}
-:host(i-log) .page {
+:host(i-log) .from {
     --color: var(--color-maximum-blue-green);
     display: grid;
     color: hsl( var(--color) );

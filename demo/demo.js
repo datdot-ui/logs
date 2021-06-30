@@ -1,26 +1,28 @@
 const bel = require('bel')
 const csjs = require('csjs-inject')
-const file = require('path').basename(__filename)
+const message_maker = require('../src/node_modules/message_maker')
 const logs = require('..')
 
-function demoApp () {
+function demo () {
     const recipients = []
-    let isChecked = false
-    let isSelected = false
-    const logList = logs( protocol('logs') )
-    recipients['logs']({from: 'logs', type: 'ready', fn: 'demoApp', file, line: 9})
-    const toggle = bel`<button class="btn" role="switch" aria-label="Toggle" aria-checked="${isChecked}" onclick=${() => handleToggle('toggle') }>Toggle</button>`
-    const select = bel`<button class="btn" role="button" aria-label="Select" aria-selected="${isSelected}" onclick=${() => handleSelect('select') }>Select</button>`
+    let is_checked = false
+    let is_selected = false
+    const logList = logs(protocol('logs'))
+    const make = message_maker(`Demo/demo`)
+    const message = make({type: 'ready'})
+    recipients['logs'](message)
+    const toggle = bel`<button class="btn" role="switch" aria-label="Toggle" aria-checked="${is_checked}" onclick=${() => handle_toggle_event('toggle') }>Toggle</button>`
+    const select = bel`<button class="btn" role="button" aria-label="Select" aria-selected="${is_selected}" onclick=${() => handle_selected_event('select') }>Select</button>`
             
     const container = bel`
     <div class="${css.container}">
         <h1>Logs event</h1>
         <div class="${css.actions}">
-            <button class="btn" role="button" aria-label="Click" onclick=${() => handleClick('click') }>Click</button>
-            <button class="btn" role="button" aria-label="Open" onclick=${() => handleOpen('open') }>Open</button>
-            <button class="btn" role="button" aria-label="Close" onclick=${() => handleClose('close') }>Close</button>
-            <button class="btn" role="button" aria-label="Error" onclick=${() => handleError('error') }>Error</button>
-            <button class="btn" role="button" aria-label="Warning" onclick=${() => handleWarning('warning') }>Warning</button>
+            <button class="btn" role="button" aria-label="Click" onclick=${() => handle_click_event('click') }>Click</button>
+            <button class="btn" role="button" aria-label="Open" onclick=${() => handle_open_event('open') }>Open</button>
+            <button class="btn" role="button" aria-label="Close" onclick=${() => handle_close_event('close') }>Close</button>
+            <button class="btn" role="button" aria-label="Error" onclick=${() => handle_error_event('error') }>Error</button>
+            <button class="btn" role="button" aria-label="Warning" onclick=${() => handle_warning_event('warning') }>Warning</button>
             ${toggle}${select}
         </div>
     </div>`
@@ -32,44 +34,69 @@ function demoApp () {
 
     return app
 
-    function handleClick (target) {
-        recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handleClick', file, line: 36})
-        handleTriggerEvent(target)
+    function handle_click_event (target) {
+        const make = message_maker(`${target}/button/PLAN/handle_click_event`)
+        const message = make({type: 'ready'})
+        // recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handle_click_event', line: 36})
+        recipients['logs'](message)
+        handle_trigger_event(target)
     }
-    function handleTriggerEvent(target) {
-        recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handleTriggerEvent', file, line: 40})
+    function handle_trigger_event(target) {
+        const make = message_maker(`${target}/button/PLAN/handle_trigger_event`)
+        const message = make({type: 'ready'})
+        // recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handle_trigger_event', line: 40})
+        recipients['logs'](message)
     }
-    function handleOpen (target) {
-        recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handleOpen', file, line: 43})
+    function handle_open_event (target) {
+        const make = message_maker(`${target}/button/PLAN/handle_open_event`)
+        const message = make({type: 'ready'})
+        // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handle_open_event', line: 43})
+        recipients['logs'](message)
     }
-    function handleClose (target) {
-        recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'closed', fn: 'handleClose', file, line: 46})
+    function handle_close_event (target) {
+        const make = message_maker(`${target}/button/USER/handle_error_event`)
+        const message = make({type: 'ready'})
+        // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'closed', fn: 'handle_close_event', line: 46})
+        recipients['logs'](message)
     }
-    function handleError (target) {
-        recipients['logs']({page: 'USER', from: target, flow: 'transfer', type: 'error', fn: 'handleError', file, line: 49})
+    function handle_error_event (target) {
+        const make = message_maker(`${target}/button/USER/handle_error_event`)
+        const message = make({type: 'ready'})
+        // recipients['logs']({page: 'USER', from: target, flow: 'transfer', type: 'error', fn: 'handle_error_event', line: 49})
+        recipients['logs'](message)
     }
-    function handleWarning (target) {
-        recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handleError', file, line: 52})
+    function handle_warning_event (target) {
+        const make = message_maker(`${target}/button/PLAN/handle_warning_event`)
+        const message = make({type: 'warning'})
+        // recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handle_error_event', line: 52})
+        recipients['logs'](message)
     }
-    function handleToggle(target) {
-        isChecked = !isChecked
-        const type = isChecked === true ? 'checked' : 'unchecked'
-        toggle.ariaChecked = isChecked
-        recipients['logs']({page: 'JOBS', from: target, flow: 'switch/button', type, fn: 'handleToggle', file, line: 58})
+    function handle_toggle_event(target) {
+        is_checked = !is_checked
+        const type = is_checked === true ? 'checked' : 'unchecked'
+        toggle.ariaChecked = is_checked
+        const make = message_maker(`button/JOBS/handle_toggle_event`)
+        const message = make({type})
+        // recipients['logs']({page: 'JOBS', from: target, flow: 'switch/button', type, fn: 'handle_toggle_event', line: 58})
+        recipients['logs'](message)
     }
-    function handleSelect (target) {
-        isSelected = !isSelected
-        const type = isSelected === true ? 'selected' : 'unselected'
-        select.ariaSelected = isSelected
-        recipients['logs']({page: 'PLANS', from: target, flow: 'date/button', type, fn: 'handleSelect', file, line: 64})
+    function handle_selected_event (target) {
+        is_selected = !is_selected
+        const type = is_selected === true ? 'selected' : 'unselected'
+        select.ariaSelected = is_selected
+        const make = message_maker(`button/PLAN/handle_selected_event`)
+        const message = make({type})
+        // recipients['logs']({page: 'PLAN', from: target, flow: 'date/button', type, fn: 'handle_selected_event', line: 64})
+        recipients['logs'](message)
     }
     function protocol (name) {
         return sender => {
             recipients[name] = sender
             return (msg) => {
                 const {page, from, flow, type, body} = msg
+                console.log( msg )
                 // console.log( `type: ${type}, file: ${file}, line: ${line}`);
-                // recipients['logs'](msg)
+                recipients['logs'](msg)
             }
         }
     }
@@ -211,4 +238,4 @@ button:hover {
 }
 `
 
-document.body.append( demoApp() )
+document.body.append( demo() )
