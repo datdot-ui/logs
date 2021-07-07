@@ -2,6 +2,7 @@ const bel = require('bel')
 const csjs = require('csjs-inject')
 const message_maker = require('../src/node_modules/message_maker')
 const logs = require('..')
+const head = require('head')()
 
 function demo () {
     const recipients = []
@@ -212,8 +213,8 @@ button:hover {
 }
 .actions {
     display: grid;
-    grid-auto-flow: column;
-    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(60px, auto));
+    gap: 15px;
 }
 [data-state="debug"] i-log {
     position: fixed;
@@ -228,7 +229,7 @@ button:hover {
 }
 @media (max-width: 960px) {
     [data-state="debug"] {
-        grid-template-rows: 60% 40%;
+        grid-template-rows: 50% 50%;
         grid-template-columns: auto;
     }
     [data-state="debug"] i-log {

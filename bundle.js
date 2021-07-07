@@ -3,6 +3,7 @@ const bel = require('bel')
 const csjs = require('csjs-inject')
 const message_maker = require('../src/node_modules/message_maker')
 const logs = require('..')
+const head = require('head')()
 
 function demo () {
     const recipients = []
@@ -213,8 +214,8 @@ button:hover {
 }
 .actions {
     display: grid;
-    grid-auto-flow: column;
-    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(60px, auto));
+    gap: 15px;
 }
 [data-state="debug"] i-log {
     position: fixed;
@@ -229,7 +230,7 @@ button:hover {
 }
 @media (max-width: 960px) {
     [data-state="debug"] {
-        grid-template-rows: 60% 40%;
+        grid-template-rows: 50% 50%;
         grid-template-columns: auto;
     }
     [data-state="debug"] i-log {
@@ -240,7 +241,17 @@ button:hover {
 `
 
 document.body.append( demo() )
-},{"..":26,"../src/node_modules/message_maker":27,"bel":3,"csjs-inject":6}],2:[function(require,module,exports){
+},{"..":27,"../src/node_modules/message_maker":28,"bel":4,"csjs-inject":7,"head":2}],2:[function(require,module,exports){
+module.exports = head
+
+function head (lang = 'utf8', title = 'Logs - DatDot UI') {
+    document.title = title
+    const meta = document.createElement('meta')
+    meta.setAttribute('name', 'viewport')
+    meta.setAttribute('content', 'width=device-width, initial-scale=1.0')
+    document.head.appendChild(meta)
+}
+},{}],3:[function(require,module,exports){
 var trailingNewlineRegex = /\n[\s]+$/
 var leadingNewlineRegex = /^\n[\s]+/
 var trailingSpaceRegex = /[\s]+$/
@@ -373,7 +384,7 @@ module.exports = function appendChild (el, childs) {
   }
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var hyperx = require('hyperx')
 var appendChild = require('./appendChild')
 
@@ -474,7 +485,7 @@ module.exports = hyperx(belCreateElement, {comments: true})
 module.exports.default = module.exports
 module.exports.createElement = belCreateElement
 
-},{"./appendChild":2,"hyperx":24}],4:[function(require,module,exports){
+},{"./appendChild":3,"hyperx":25}],5:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
 
@@ -493,12 +504,12 @@ function csjsInserter() {
 module.exports = csjsInserter;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"csjs":9,"insert-css":25}],5:[function(require,module,exports){
+},{"csjs":10,"insert-css":26}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = require('csjs/get-css');
 
-},{"csjs/get-css":8}],6:[function(require,module,exports){
+},{"csjs/get-css":9}],7:[function(require,module,exports){
 'use strict';
 
 var csjs = require('./csjs');
@@ -507,17 +518,17 @@ module.exports = csjs;
 module.exports.csjs = csjs;
 module.exports.getCss = require('./get-css');
 
-},{"./csjs":4,"./get-css":5}],7:[function(require,module,exports){
+},{"./csjs":5,"./get-css":6}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib/csjs');
 
-},{"./lib/csjs":13}],8:[function(require,module,exports){
+},{"./lib/csjs":14}],9:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib/get-css');
 
-},{"./lib/get-css":17}],9:[function(require,module,exports){
+},{"./lib/get-css":18}],10:[function(require,module,exports){
 'use strict';
 
 var csjs = require('./csjs');
@@ -527,7 +538,7 @@ module.exports.csjs = csjs;
 module.exports.noScope = csjs({ noscope: true });
 module.exports.getCss = require('./get-css');
 
-},{"./csjs":7,"./get-css":8}],10:[function(require,module,exports){
+},{"./csjs":8,"./get-css":9}],11:[function(require,module,exports){
 'use strict';
 
 /**
@@ -549,7 +560,7 @@ module.exports = function encode(integer) {
   return str;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var makeComposition = require('./composition').makeComposition;
@@ -593,7 +604,7 @@ function getClassChain(obj) {
   return acc;
 }
 
-},{"./composition":12}],12:[function(require,module,exports){
+},{"./composition":13}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -673,7 +684,7 @@ function ignoreComposition(values) {
  */
 function Composition() {}
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var extractExtends = require('./css-extract-extends');
@@ -751,7 +762,7 @@ function without(obj, unwanted) {
   }, {});
 }
 
-},{"./build-exports":11,"./composition":12,"./css-extract-extends":14,"./css-key":15,"./extract-exports":16,"./scopeify":22}],14:[function(require,module,exports){
+},{"./build-exports":12,"./composition":13,"./css-extract-extends":15,"./css-key":16,"./extract-exports":17,"./scopeify":23}],15:[function(require,module,exports){
 'use strict';
 
 var makeComposition = require('./composition').makeComposition;
@@ -804,7 +815,7 @@ function getClassName(str) {
   return trimmed[0] === '.' ? trimmed.substr(1) : trimmed;
 }
 
-},{"./composition":12}],15:[function(require,module,exports){
+},{"./composition":13}],16:[function(require,module,exports){
 'use strict';
 
 /**
@@ -814,7 +825,7 @@ function getClassName(str) {
 
 module.exports = ' css ';
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 var regex = require('./regex');
@@ -841,7 +852,7 @@ function getExport(css, regex) {
   return prop;
 }
 
-},{"./regex":19}],17:[function(require,module,exports){
+},{"./regex":20}],18:[function(require,module,exports){
 'use strict';
 
 var cssKey = require('./css-key');
@@ -850,7 +861,7 @@ module.exports = function getCss(csjs) {
   return csjs[cssKey];
 };
 
-},{"./css-key":15}],18:[function(require,module,exports){
+},{"./css-key":16}],19:[function(require,module,exports){
 'use strict';
 
 /**
@@ -868,7 +879,7 @@ module.exports = function hashStr(str) {
   return hash >>> 0;
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var findClasses = /(\.)(?!\d)([^\s\.,{\[>+~#:)]*)(?![^{]*})/.source;
@@ -884,7 +895,7 @@ module.exports = {
   ignoreComments: ignoreComments,
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var ignoreComments = require('./regex').ignoreComments;
 
 module.exports = replaceAnimations;
@@ -915,7 +926,7 @@ function replaceAnimations(result) {
   return result;
 }
 
-},{"./regex":19}],21:[function(require,module,exports){
+},{"./regex":20}],22:[function(require,module,exports){
 'use strict';
 
 var encode = require('./base62-encode');
@@ -929,7 +940,7 @@ module.exports = function fileScoper(fileSrc) {
   }
 };
 
-},{"./base62-encode":10,"./hash-string":18}],22:[function(require,module,exports){
+},{"./base62-encode":11,"./hash-string":19}],23:[function(require,module,exports){
 'use strict';
 
 var fileScoper = require('./scoped-name');
@@ -970,7 +981,7 @@ function scopify(css, ignores) {
   return replaceAnimations(result);
 }
 
-},{"./regex":19,"./replace-animations":20,"./scoped-name":21}],23:[function(require,module,exports){
+},{"./regex":20,"./replace-animations":21,"./scoped-name":22}],24:[function(require,module,exports){
 module.exports = attributeToProperty
 
 var transform = {
@@ -991,7 +1002,7 @@ function attributeToProperty (h) {
   }
 }
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 var attrToProp = require('hyperscript-attribute-to-property')
 
 var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
@@ -1288,7 +1299,7 @@ var closeRE = RegExp('^(' + [
 ].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
 function selfClosing (tag) { return closeRE.test(tag) }
 
-},{"hyperscript-attribute-to-property":23}],25:[function(require,module,exports){
+},{"hyperscript-attribute-to-property":24}],26:[function(require,module,exports){
 var inserted = {};
 
 module.exports = function (css, options) {
@@ -1312,7 +1323,7 @@ module.exports = function (css, options) {
     }
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 const bel = require('bel')
 const style_sheet = require('support-style-sheet')
 const message_maker = require('message_maker')
@@ -1520,7 +1531,7 @@ log-list .list:last-child .function {
     color: white;
 }
 `
-},{"bel":3,"message_maker":27,"support-style-sheet":28}],27:[function(require,module,exports){
+},{"bel":4,"message_maker":28,"support-style-sheet":29}],28:[function(require,module,exports){
 module.exports = function message_maker (from) {
     let msg_id = 0
     return function make ({to, type, data = null, refs = []}) {
@@ -1529,7 +1540,7 @@ module.exports = function message_maker (from) {
         return message
     }
 }
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = support_style_sheet
 function support_style_sheet (root, style) {
     return (() => {
