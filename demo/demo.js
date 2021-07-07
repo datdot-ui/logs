@@ -8,8 +8,8 @@ function demo () {
     let is_checked = false
     let is_selected = false
     const logList = logs(protocol('logs'))
-    const make = message_maker(`Demo/demo`)
-    const message = make({type: 'ready'})
+    const make = message_maker(`i_log / demo / demo.js`)
+    const message = make({to: 'demo / demo.js', type: 'ready', refs: ['old_logs', 'new_logs']})
     recipients['logs'](message)
     const toggle = bel`<button class="btn" role="switch" aria-label="Toggle" aria-checked="${is_checked}" onclick=${() => handle_toggle_event('toggle') }>Toggle</button>`
     const select = bel`<button class="btn" role="button" aria-label="Select" aria-selected="${is_selected}" onclick=${() => handle_selected_event('select') }>Select</button>`
@@ -35,38 +35,38 @@ function demo () {
     return app
 
     function handle_click_event (target) {
-        const make = message_maker(`${target}/button/PLAN/handle_click_event`)
-        const message = make({type: 'ready'})
+        const make = message_maker(`${target} / button / PLAN / handle_click_event`)
+        const message = make({type: 'click'})
         // recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handle_click_event', line: 36})
         recipients['logs'](message)
         handle_trigger_event(target)
     }
     function handle_trigger_event(target) {
-        const make = message_maker(`${target}/button/PLAN/handle_trigger_event`)
-        const message = make({type: 'ready'})
+        const make = message_maker(`${target} / button / PLAN / handle_trigger_event`)
+        const message = make({type: 'triggered'})
         // recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handle_trigger_event', line: 40})
         recipients['logs'](message)
     }
     function handle_open_event (target) {
-        const make = message_maker(`${target}/button/PLAN/handle_open_event`)
-        const message = make({type: 'ready'})
+        const make = message_maker(`${target} / button / PLAN / handle_open_event`)
+        const message = make({type: 'opened'})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handle_open_event', line: 43})
         recipients['logs'](message)
     }
     function handle_close_event (target) {
-        const make = message_maker(`${target}/button/USER/handle_error_event`)
-        const message = make({type: 'ready'})
+        const make = message_maker(`${target} / button / USER / handle_error_event`)
+        const message = make({type: 'closed'})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'closed', fn: 'handle_close_event', line: 46})
         recipients['logs'](message)
     }
     function handle_error_event (target) {
-        const make = message_maker(`${target}/button/USER/handle_error_event`)
-        const message = make({type: 'ready'})
+        const make = message_maker(`${target} / button / USER / handle_error_event`)
+        const message = make({type: 'error'})
         // recipients['logs']({page: 'USER', from: target, flow: 'transfer', type: 'error', fn: 'handle_error_event', line: 49})
         recipients['logs'](message)
     }
     function handle_warning_event (target) {
-        const make = message_maker(`${target}/button/PLAN/handle_warning_event`)
+        const make = message_maker(`${target} / button / PLAN / handle_warning_event`)
         const message = make({type: 'warning'})
         // recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handle_error_event', line: 52})
         recipients['logs'](message)
@@ -75,7 +75,7 @@ function demo () {
         is_checked = !is_checked
         const type = is_checked === true ? 'checked' : 'unchecked'
         toggle.ariaChecked = is_checked
-        const make = message_maker(`button/JOBS/handle_toggle_event`)
+        const make = message_maker(`button / JOBS / handle_toggle_event`)
         const message = make({type})
         // recipients['logs']({page: 'JOBS', from: target, flow: 'switch/button', type, fn: 'handle_toggle_event', line: 58})
         recipients['logs'](message)
@@ -84,7 +84,7 @@ function demo () {
         is_selected = !is_selected
         const type = is_selected === true ? 'selected' : 'unselected'
         select.ariaSelected = is_selected
-        const make = message_maker(`button/PLAN/handle_selected_event`)
+        const make = message_maker(`button / PLAN / handle_selected_event`)
         const message = make({type})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'date/button', type, fn: 'handle_selected_event', line: 64})
         recipients['logs'](message)
