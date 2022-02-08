@@ -4,14 +4,22 @@ const message_maker = require('../src/node_modules/message_maker')
 const logs = require('..')
 const head = require('head')()
 
+var id = 0
+
 function demo () {
-    const recipients = []
+    // ---------------------------------------------------------------
+    const myaddress = `demo-${id++}`
+    const inbox = {}
+    const outbox = {}
+    const recipients = {}
+    const message_id = to => ( outbox[to] = 1 + (outbox[to]||0) )
+// ---------------------------------------------------------------
     let is_checked = false
     let is_selected = false
-    const logList = logs(protocol('logs'))
-    const make = message_maker(`i_log / demo / demo.js`)
-    const message = make({to: 'demo / demo.js', type: 'ready', refs: ['old_logs', 'new_logs']})
-    recipients['logs'](message)
+    const logList = logs(make_protocol('logs'))
+    const make = message_maker(myaddress)
+    // const message = make({ to: recipients['logs'].address, to: address, type: 'ready', refs: ['old_logs', 'new_logs']})
+    // recipients['logs'].notify(message)
     const toggle = bel`<button class="btn" role="switch" aria-label="Toggle" aria-checked="${is_checked}" onclick=${() => handle_toggle_event('toggle') }>Toggle</button>`
     const select = bel`<button class="btn" role="button" aria-label="Select" aria-selected="${is_selected}" onclick=${() => handle_selected_event('select') }>Select</button>`
             
@@ -37,69 +45,73 @@ function demo () {
 
     function handle_click_event (target) {
         const make = message_maker(`${target} / button / PLAN / handle_click_event`)
-        const message = make({type: 'click'})
+        const message = make({ to: recipients['logs'].address, type: 'click'})
         // recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handle_click_event', line: 36})
-        recipients['logs'](message)
+        recipients['logs'].notify(message)
         handle_trigger_event(target)
     }
     function handle_trigger_event(target) {
         const make = message_maker(`${target} / button / PLAN / handle_trigger_event`)
-        const message = make({type: 'triggered'})
+        const message = make({ to: recipients['logs'].address, type: 'triggered'})
         // recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handle_trigger_event', line: 40})
-        recipients['logs'](message)
+        recipients['logs'].notify(message)
     }
     function handle_open_event (target) {
         const make = message_maker(`${target} / button / PLAN / handle_open_event`)
-        const message = make({type: 'opened'})
+        const message = make({ to: recipients['logs'].address, type: 'opened'})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handle_open_event', line: 43})
-        recipients['logs'](message)
+        recipients['logs'].notify(message)
     }
     function handle_close_event (target) {
         const make = message_maker(`${target} / button / USER / handle_error_event`)
-        const message = make({type: 'closed'})
+        const message = make({ to: recipients['logs'].address, type: 'closed'})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'closed', fn: 'handle_close_event', line: 46})
-        recipients['logs'](message)
+        recipients['logs'].notify(message)
     }
     function handle_error_event (target) {
         const make = message_maker(`${target} / button / USER / handle_error_event`)
-        const message = make({type: 'error'})
+        const message = make({ to: recipients['logs'].address, type: 'error'})
         // recipients['logs']({page: 'USER', from: target, flow: 'transfer', type: 'error', fn: 'handle_error_event', line: 49})
-        recipients['logs'](message)
+        recipients['logs'].notify(message)
     }
     function handle_warning_event (target) {
         const make = message_maker(`${target} / button / PLAN / handle_warning_event`)
-        const message = make({type: 'warning'})
+        const message = make({ to: recipients['logs'].address, type: 'warning'})
         // recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handle_error_event', line: 52})
-        recipients['logs'](message)
+        console.log({ message })
+        recipients['logs'].notify(message)
     }
     function handle_toggle_event(target) {
         is_checked = !is_checked
         const type = is_checked === true ? 'checked' : 'unchecked'
         toggle.ariaChecked = is_checked
         const make = message_maker(`button / JOBS / handle_toggle_event`)
-        const message = make({type})
+        const message = make({ to: recipients['logs'].address, type})
         // recipients['logs']({page: 'JOBS', from: target, flow: 'switch/button', type, fn: 'handle_toggle_event', line: 58})
-        recipients['logs'](message)
+        recipients['logs'].notify(message)
     }
     function handle_selected_event (target) {
         is_selected = !is_selected
         const type = is_selected === true ? 'selected' : 'unselected'
         select.ariaSelected = is_selected
         const make = message_maker(`button / PLAN / handle_selected_event`)
-        const message = make({type})
+        const message = make({ to: recipients['logs'].address, type})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'date/button', type, fn: 'handle_selected_event', line: 64})
-        recipients['logs'](message)
+        recipients['logs'].notify(message)
     }
-    function protocol (name) {
-        return sender => {
-            recipients[name] = sender
-            return (msg) => {
-                const {page, from, flow, type, body} = msg
-                console.log( msg )
-                // console.log( `type: ${type}, file: ${file}, line: ${line}`);
-                recipients['logs'](msg)
-            }
+    function make_protocol (name) {
+        return function protocol (address, notify) {
+            recipients[name] = { address, notify, make: message_maker(myaddress) }
+            return { notify: listen, address: myaddress }
         }
+    }
+    function listen (msg) {
+        console.log('New message', { msg })
+        const { head, refs, type, data, meta } = msg // receive msg
+        inbox[head.join('/')] = msg                  // store msg
+        console.log({recipients})
+        recipients['logs'].notify(msg)
+        const [from] = head
     }
 }
 

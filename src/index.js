@@ -2,13 +2,60 @@ const bel = require('bel')
 const style_sheet = require('support-style-sheet')
 const message_maker = require('message_maker')
 
+var id = 0
+
 module.exports = i_log
-function i_log (protocol, to = 'Test for a long component name / demo / demo.js') {
-    const send = protocol(get)
-    const make = message_maker(`ui-logs / i_log / index.js`)
-    const message = make({to, type: 'ready', refs: ['old_logs', 'new_logs']})
-    send(message)
-    // send({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', line: 8})
+
+function i_log (protocol) {
+    // ---------------------------------------------------------------
+    const myaddress = `logs-${id++}`
+    const inbox = {}
+    const outbox = {}
+    const recipients = {}
+    const message_id = to => ( outbox[to] = 1 + (outbox[to]||0) )
+// ---------------------------------------------------------------
+    const {notify, address} = protocol(myaddress, function listen (msg) {
+        console.log(`Message for ${myaddress}`, {msg})
+        // const {page = 'Demo', from, flow, type, body, fn, file, line} = msg
+        try {
+            const { head, refs, type, data, meta } = msg // listen to msg
+            // inbox[head.join('/')] = msg                  // store msg
+            const from = bel`<span aria-label=${head[0]} class="from">${head[0]}</span>`
+            const to = bel`<span aria-label="to" class="to">${head[1]}</span>`
+            const data_info = bel`<span aria-label="data" class="data">data: ${typeof data === 'object' ? JSON.stringify(data) : data}</span>`
+            const type_info = bel`<span aria-type="${type}" aria-label="${type}"  class="type">${type}</span>`
+            const refs_info = bel`<div class="refs">refs: </div>`
+            Object.keys(refs).map( (key, i) => refs_info.append(bel`<span aria-label="${refs[key]}">${refs[key]}${i <  Object.keys(refs).length - 1 ? ', ' : ''}</span>`))
+            const log = bel`<div class="log">
+                <div class="head">
+                    ${from}
+                    ${type_info}
+                    ${to}
+                </div>
+                ${data_info}
+                ${refs_info}
+            </div>`
+            
+            var list = bel`<aside class="list">
+                ${log}
+                <div class="file">
+                    <span>${meta.stack[0]}</span>
+                    <span>${meta.stack[1]}</span>
+                </div>
+            </aside>
+            `
+            log_list.append(list)
+            log_list.scrollTop = log_list.scrollHeight
+        } catch (error) {
+            console.log({error})
+            document.addEventListener('DOMContentLoaded', () => log_list.append(list))
+            return false
+        }
+    })
+    const make = message_maker(myaddress)
+    let message = make({ to: address, type: 'ready', refs: ['old_logs', 'new_logs'] })
+    notify(message)
+    // notify({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', line: 8})
     const i_log = document.createElement('i-log')
     const shadow = i_log.attachShadow({mode: 'closed'})
     const title = bel`<h4>Logs</h4>`
@@ -20,43 +67,6 @@ function i_log (protocol, to = 'Test for a long component name / demo / demo.js'
     document.addEventListener('DOMContentLoaded', () => { log_list.scrollTop = log_list.scrollHeight })
 
     return i_log
-
-    function get (msg) {
-        // const {page = 'Demo', from, flow, type, body, fn, file, line} = msg
-        const {head, refs, type, data, meta} = msg
-        try {
-            const from = bel`<span aria-label=${head[0]} class="from">${head[0]}</span>`
-            const to = bel`<span aria-label="to" class="to">${head[1]}</span>`
-            const data_info = bel`<span aira-label="data" class="data">data: ${typeof data === 'object' ? JSON.stringify(data) : data}</span>`
-            const type_info = bel`<span aria-type="${type}" aria-label="${type}"  class="type">${type}</span>`
-            const refs_info = bel`<div class="refs">refs: </div>`
-            refs.map( (ref, i) => refs_info.append(bel`<span aria-label="${ref}">${ref}${i < refs.length - 1 ? ', ' : ''}</span>`))
-            const log = bel`
-            <div class="log">
-                <div class="head">
-                    ${from}
-                    ${type_info}
-                    ${to}
-                </div>
-                ${data_info}
-                ${refs_info}
-            </div>`
-            var list = bel`
-            <aside class="list">
-                ${log}
-                <div class="file">
-                    <span>${meta.stack[0]}</span>
-                    <span>${meta.stack[1]}</span>
-                </div>
-            </aside>
-            `
-            log_list.append(list)
-            log_list.scrollTop = log_list.scrollHeight
-        } catch (error) {
-            document.addEventListener('DOMContentLoaded', () => log_list.append(list))
-            return false
-        }
-    }
 }
 
 const style = `
