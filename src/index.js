@@ -6,15 +6,20 @@ var id = 0
 
 module.exports = i_log
 
-function i_log (protocol) {
+function i_log (parent_protocol) {
     // ---------------------------------------------------------------
     const myaddress = `logs-${id++}`
     const inbox = {}
     const outbox = {}
     const recipients = {}
     const message_id = to => ( outbox[to] = 1 + (outbox[to]||0) )
-// ---------------------------------------------------------------
-    const {notify, address} = protocol(myaddress, function listen (msg) {
+
+    const {notify, address} = parent_protocol(myaddress, listen)
+    const make = message_maker(myaddress)
+    let message = make({ to: address, type: 'ready', refs: ['old_logs', 'new_logs'] })
+    notify(message)
+
+    function listen (msg) {
         console.log(`Message for ${myaddress}`, {msg})
         // const {page = 'Demo', from, flow, type, body, fn, file, line} = msg
         try {
@@ -51,10 +56,8 @@ function i_log (protocol) {
             document.addEventListener('DOMContentLoaded', () => log_list.append(list))
             return false
         }
-    })
-    const make = message_maker(myaddress)
-    let message = make({ to: address, type: 'ready', refs: ['old_logs', 'new_logs'] })
-    notify(message)
+    }
+// ---------------------------------------------------------------
     // notify({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', line: 8})
     const i_log = document.createElement('i-log')
     const shadow = i_log.attachShadow({mode: 'closed'})

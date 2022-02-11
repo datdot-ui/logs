@@ -13,6 +13,21 @@ function demo () {
     const outbox = {}
     const recipients = {}
     const message_id = to => ( outbox[to] = 1 + (outbox[to]||0) )
+
+    function make_protocol (name) {
+        return function protocol (address, notify) {
+            recipients[name] = { address, notify, make: message_maker(myaddress) }
+            return { notify: listen, address: myaddress }
+        }
+    }
+    function listen (msg) {
+        console.log('New message', { msg })
+        const { head, refs, type, data, meta } = msg // receive msg
+        inbox[head.join('/')] = msg                  // store msg
+        console.log({recipients})
+        recipients['logs'].notify(msg)
+        const [from] = head
+    }
 // ---------------------------------------------------------------
     let is_checked = false
     let is_selected = false
@@ -98,20 +113,6 @@ function demo () {
         const message = make({ to: recipients['logs'].address, type})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'date/button', type, fn: 'handle_selected_event', line: 64})
         recipients['logs'].notify(message)
-    }
-    function make_protocol (name) {
-        return function protocol (address, notify) {
-            recipients[name] = { address, notify, make: message_maker(myaddress) }
-            return { notify: listen, address: myaddress }
-        }
-    }
-    function listen (msg) {
-        console.log('New message', { msg })
-        const { head, refs, type, data, meta } = msg // receive msg
-        inbox[head.join('/')] = msg                  // store msg
-        console.log({recipients})
-        recipients['logs'].notify(msg)
-        const [from] = head
     }
 }
 
