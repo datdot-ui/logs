@@ -1,6 +1,6 @@
 const bel = require('bel')
 const style_sheet = require('support-style-sheet')
-const message_maker = require('message_maker')
+const message_maker = require('message-maker')
 
 var id = 0
 

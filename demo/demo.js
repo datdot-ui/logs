@@ -1,6 +1,6 @@
 const bel = require('bel')
 const csjs = require('csjs-inject')
-const message_maker = require('../src/node_modules/message_maker')
+const message_maker = require('message-maker')
 const logs = require('..')
 const head = require('head')()
 
