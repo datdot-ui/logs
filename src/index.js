@@ -8,23 +8,22 @@ module.exports = i_log
 
 function i_log (parent_protocol) {
     // ---------------------------------------------------------------
-    const myaddress = `logs-${id++}`
+    const myaddress = `${__filename}-${id++}`
     const inbox = {}
     const outbox = {}
     const recipients = {}
-    const message_id = to => ( outbox[to] = 1 + (outbox[to]||0) )
+    const names = {}
+    const message_id = to => (outbox[to] = 1 + (outbox[to]||0))
 
     const {notify, address} = parent_protocol(myaddress, listen)
-    const make = message_maker(myaddress)
-    let message = make({ to: address, type: 'ready', refs: ['old_logs', 'new_logs'] })
-    notify(message)
+    names[address] = recipients['parent'] = { name: 'parent', notify, address, make: message_maker(myaddress) }
+
+    notify(recipients['parent'].make({ to: address, type: 'ready', refs: {} }))
 
     function listen (msg) {
-        console.log(`Message for ${myaddress}`, {msg})
-        // const {page = 'Demo', from, flow, type, body, fn, file, line} = msg
         try {
             const { head, refs, type, data, meta } = msg // listen to msg
-            // inbox[head.join('/')] = msg                  // store msg
+            inbox[head.join('/')] = msg                  // store msg
             const from = bel`<span aria-label=${head[0]} class="from">${head[0]}</span>`
             const to = bel`<span aria-label="to" class="to">${head[1]}</span>`
             const data_info = bel`<span aria-label="data" class="data">data: ${typeof data === 'object' ? JSON.stringify(data) : data}</span>`
