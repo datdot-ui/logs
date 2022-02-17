@@ -7,6 +7,11 @@ var id = 0
 module.exports = i_log
 
 function i_log (parent_protocol) {
+    const i_log = document.createElement('i-log')
+    const shadow = i_log.attachShadow({mode: 'closed'})
+    const title = bel`<h4>Logs</h4>`
+    const content = bel`<section class="content">${title}</section>`
+    const logList = document.createElement('log-list')
     // ---------------------------------------------------------------
     const myaddress = `${__filename}-${id++}`
     const inbox = {}
@@ -48,25 +53,19 @@ function i_log (parent_protocol) {
                 </div>
             </aside>
             `
-            log_list.append(list)
-            log_list.scrollTop = log_list.scrollHeight
+            logList.append(list)
+            logList.scrollTop = logList.scrollHeight
         } catch (error) {
             console.log({error})
-            document.addEventListener('DOMContentLoaded', () => log_list.append(list))
+            document.addEventListener('DOMContentLoaded', () => logList.append(list))
             return false
         }
     }
 // ---------------------------------------------------------------
-    // notify({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', line: 8})
-    const i_log = document.createElement('i-log')
-    const shadow = i_log.attachShadow({mode: 'closed'})
-    const title = bel`<h4>Logs</h4>`
-    const content = bel`<section class="content">${title}</section>`
-    const log_list = document.createElement('log-list')
     style_sheet(shadow, style)
-    content.append(log_list)
+    content.append(logList)
     shadow.append(content)
-    document.addEventListener('DOMContentLoaded', () => { log_list.scrollTop = log_list.scrollHeight })
+    document.addEventListener('DOMContentLoaded', () => { logList.scrollTop = logList.scrollHeight })
 
     return i_log
 }

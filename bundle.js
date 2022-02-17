@@ -1,18 +1,44 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function (__filename){(function (){
 const bel = require('bel')
 const csjs = require('csjs-inject')
-const message_maker = require('../src/node_modules/message_maker')
+const message_maker = require('message-maker')
 const logs = require('..')
 const head = require('head')()
 
+var id = 0
+
 function demo () {
-    const recipients = []
+// ---------------------------------------------------------------
+    const myaddress = `${__filename}-${id++}`
+    const inbox = {}
+    const outbox = {}
+    const recipients = {}
+    const names = {}
+    const message_id = to => (outbox[to] = 1 + (outbox[to]||0))
+
+    function make_protocol (name) {
+        return function protocol (address, notify) {
+            names[address] = recipients[name] = { name, address, notify, make: message_maker(myaddress) }
+            return { notify: listen, address: myaddress }
+        }
+    }
+    function listen (msg) {
+        console.log('New message', { msg })
+        const { head, refs, type, data, meta } = msg // receive msg
+        inbox[head.join('/')] = msg                  // store msg
+        recipients['logs'].notify(msg)
+        const [from] = head
+        const { notify, make, address } = names[from]
+        notify(make({ to: address, type: 'ack', refs: { 'cause': head } }))
+    }
+// ---------------------------------------------------------------
     let is_checked = false
     let is_selected = false
-    const logList = logs(protocol('logs'))
-    const make = message_maker(`i_log / demo / demo.js`)
-    const message = make({to: 'demo / demo.js', type: 'ready', refs: ['old_logs', 'new_logs']})
-    recipients['logs'](message)
+    const logList = logs(make_protocol('logs'))
+    const make = message_maker(myaddress)
+    // const message = make({ to: recipients['logs'].address, to: address, type: 'ready', refs: ['old_logs', 'new_logs']})
+    // recipients['logs'].notify(message)
     const toggle = bel`<button class="btn" role="switch" aria-label="Toggle" aria-checked="${is_checked}" onclick=${() => handle_toggle_event('toggle') }>Toggle</button>`
     const select = bel`<button class="btn" role="button" aria-label="Select" aria-selected="${is_selected}" onclick=${() => handle_selected_event('select') }>Select</button>`
             
@@ -37,70 +63,60 @@ function demo () {
     return app
 
     function handle_click_event (target) {
-        const make = message_maker(`${target} / button / PLAN / handle_click_event`)
-        const message = make({type: 'click'})
+        const { notify, address, make } = recipients['logs']
+        const message = make({ to: address, type: 'click', data: { target: `${target} / button / PLAN / handle_click_event` }})
         // recipients['logs']({page: 'JOBS', from: target, flow: 'button', type: 'click', fn: 'handle_click_event', line: 36})
-        recipients['logs'](message)
+        console.log({mmmmesage: message})
+        notify(message)
         handle_trigger_event(target)
     }
     function handle_trigger_event(target) {
-        const make = message_maker(`${target} / button / PLAN / handle_trigger_event`)
-        const message = make({type: 'triggered'})
+        const { notify, address, make } = recipients['logs']
+        const message = make({ to: address, type: 'triggered', data: { target: `${target} / button / PLAN / handle_trigger_event` }})
         // recipients['logs']({page: 'Demo', from: target, flow: 'button', type: 'triggered', fn: 'handle_trigger_event', line: 40})
-        recipients['logs'](message)
+        notify(message)
     }
     function handle_open_event (target) {
-        const make = message_maker(`${target} / button / PLAN / handle_open_event`)
-        const message = make({type: 'opened'})
-        // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handle_open_event', line: 43})
-        recipients['logs'](message)
+        const { notify, address, make } = recipients['logs']
+        const message = make({ to: address, type: 'opened', data: { target: `` }})
+        // {page: 'PLAN', from: target, flow: 'modal/button', type: 'opened', fn: 'handle_open_event', line: 43})
+        notify(message)
     }
     function handle_close_event (target) {
-        const make = message_maker(`${target} / button / USER / handle_error_event`)
-        const message = make({type: 'closed'})
+        const { notify, address, make } = recipients['logs']
+        const message = make({ to: address, type: 'closed', data: { target: `${target} / button / USER / handle_error_event` }})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'modal/button', type: 'closed', fn: 'handle_close_event', line: 46})
-        recipients['logs'](message)
+        notify(message)
     }
     function handle_error_event (target) {
-        const make = message_maker(`${target} / button / USER / handle_error_event`)
-        const message = make({type: 'error'})
+        const { notify, address, make } = recipients['logs']
+        const message = make({ to: address, type: 'error', data: { target: `${target} / button / USER / handle_error_event` }})
         // recipients['logs']({page: 'USER', from: target, flow: 'transfer', type: 'error', fn: 'handle_error_event', line: 49})
-        recipients['logs'](message)
+        notify(message)
     }
     function handle_warning_event (target) {
-        const make = message_maker(`${target} / button / PLAN / handle_warning_event`)
-        const message = make({type: 'warning'})
+        const { notify, address, make } = recipients['logs']
+        const message = make({ to: address, type: 'warning', data: { target: `${target} / button / PLAN / handle_warning_event` }})
         // recipients['logs']({page: 'PLAN ', from: target, flow: 'plan', type: 'warning', fn: 'handle_error_event', line: 52})
-        recipients['logs'](message)
+        notify(message)
     }
     function handle_toggle_event(target) {
+        const { notify, address, make } = recipients['logs']
         is_checked = !is_checked
         const type = is_checked === true ? 'checked' : 'unchecked'
         toggle.ariaChecked = is_checked
-        const make = message_maker(`button / JOBS / handle_toggle_event`)
-        const message = make({type})
+        const message = make({ to: address, type, data: { target: `button / JOBS / handle_toggle_event` }})
         // recipients['logs']({page: 'JOBS', from: target, flow: 'switch/button', type, fn: 'handle_toggle_event', line: 58})
-        recipients['logs'](message)
+        notify(message)
     }
     function handle_selected_event (target) {
+        const { notify, address, make } = recipients['logs']
         is_selected = !is_selected
         const type = is_selected === true ? 'selected' : 'unselected'
         select.ariaSelected = is_selected
-        const make = message_maker(`button / PLAN / handle_selected_event`)
-        const message = make({type})
+        const message = make({ to: address, type, data: { target: `button / PLAN / handle_selected_event` }})
         // recipients['logs']({page: 'PLAN', from: target, flow: 'date/button', type, fn: 'handle_selected_event', line: 64})
-        recipients['logs'](message)
-    }
-    function protocol (name) {
-        return sender => {
-            recipients[name] = sender
-            return (msg) => {
-                const {page, from, flow, type, body} = msg
-                console.log( msg )
-                // console.log( `type: ${type}, file: ${file}, line: ${line}`);
-                recipients['logs'](msg)
-            }
-        }
+        notify(message)
     }
 }
 
@@ -241,7 +257,8 @@ button:hover {
 `
 
 document.body.append( demo() )
-},{"..":27,"../src/node_modules/message_maker":28,"bel":4,"csjs-inject":7,"head":2}],2:[function(require,module,exports){
+}).call(this)}).call(this,"/demo/demo.js")
+},{"..":28,"bel":4,"csjs-inject":7,"head":2,"message-maker":24}],2:[function(require,module,exports){
 module.exports = head
 
 function head (lang = 'utf8', title = 'Logs - DatDot UI') {
@@ -485,7 +502,7 @@ module.exports = hyperx(belCreateElement, {comments: true})
 module.exports.default = module.exports
 module.exports.createElement = belCreateElement
 
-},{"./appendChild":3,"hyperx":25}],5:[function(require,module,exports){
+},{"./appendChild":3,"hyperx":26}],5:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
 
@@ -504,7 +521,7 @@ function csjsInserter() {
 module.exports = csjsInserter;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"csjs":10,"insert-css":26}],6:[function(require,module,exports){
+},{"csjs":10,"insert-css":27}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = require('csjs/get-css');
@@ -982,6 +999,14 @@ function scopify(css, ignores) {
 }
 
 },{"./regex":20,"./replace-animations":21,"./scoped-name":22}],24:[function(require,module,exports){
+module.exports = function message_maker (from) {
+  let msg_id = 0
+  return function make ({to, type, data = null, refs = {} }) {
+      const stack = (new Error().stack.split('\n').slice(2).filter(x => x.trim()))
+      return { head: [from, to, msg_id++], refs, type, data, meta: { stack }}
+  }
+}
+},{}],25:[function(require,module,exports){
 module.exports = attributeToProperty
 
 var transform = {
@@ -1002,7 +1027,7 @@ function attributeToProperty (h) {
   }
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var attrToProp = require('hyperscript-attribute-to-property')
 
 var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
@@ -1299,7 +1324,7 @@ var closeRE = RegExp('^(' + [
 ].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
 function selfClosing (tag) { return closeRE.test(tag) }
 
-},{"hyperscript-attribute-to-property":24}],26:[function(require,module,exports){
+},{"hyperscript-attribute-to-property":25}],27:[function(require,module,exports){
 var inserted = {};
 
 module.exports = function (css, options) {
@@ -1323,42 +1348,46 @@ module.exports = function (css, options) {
     }
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+(function (__filename){(function (){
 const bel = require('bel')
 const style_sheet = require('support-style-sheet')
-const message_maker = require('message_maker')
+const message_maker = require('message-maker')
+
+var id = 0
 
 module.exports = i_log
-function i_log (protocol, to = 'Test for a long component name / demo / demo.js') {
-    const send = protocol(get)
-    const make = message_maker(`ui-logs / i_log / index.js`)
-    const message = make({to, type: 'ready', refs: ['old_logs', 'new_logs']})
-    send(message)
-    // send({from: 'logs', flow: 'logs-layout', type: 'ready', fn: 'logs', line: 8})
+
+function i_log (parent_protocol) {
     const i_log = document.createElement('i-log')
     const shadow = i_log.attachShadow({mode: 'closed'})
     const title = bel`<h4>Logs</h4>`
     const content = bel`<section class="content">${title}</section>`
-    const log_list = document.createElement('log-list')
-    style_sheet(shadow, style)
-    content.append(log_list)
-    shadow.append(content)
-    document.addEventListener('DOMContentLoaded', () => { log_list.scrollTop = log_list.scrollHeight })
+    const logList = document.createElement('log-list')
+    // ---------------------------------------------------------------
+    const myaddress = `${__filename}-${id++}`
+    const inbox = {}
+    const outbox = {}
+    const recipients = {}
+    const names = {}
+    const message_id = to => (outbox[to] = 1 + (outbox[to]||0))
 
-    return i_log
+    const {notify, address} = parent_protocol(myaddress, listen)
+    names[address] = recipients['parent'] = { name: 'parent', notify, address, make: message_maker(myaddress) }
 
-    function get (msg) {
-        // const {page = 'Demo', from, flow, type, body, fn, file, line} = msg
-        const {head, refs, type, data, meta} = msg
+    notify(recipients['parent'].make({ to: address, type: 'ready', refs: {} }))
+
+    function listen (msg) {
         try {
+            const { head, refs, type, data, meta } = msg // listen to msg
+            inbox[head.join('/')] = msg                  // store msg
             const from = bel`<span aria-label=${head[0]} class="from">${head[0]}</span>`
             const to = bel`<span aria-label="to" class="to">${head[1]}</span>`
-            const data_info = bel`<span aira-label="data" class="data">data: ${typeof data === 'object' ? JSON.stringify(data) : data}</span>`
+            const data_info = bel`<span aria-label="data" class="data">data: ${typeof data === 'object' ? JSON.stringify(data) : data}</span>`
             const type_info = bel`<span aria-type="${type}" aria-label="${type}"  class="type">${type}</span>`
             const refs_info = bel`<div class="refs">refs: </div>`
-            refs.map( (ref, i) => refs_info.append(bel`<span aria-label="${ref}">${ref}${i < refs.length - 1 ? ', ' : ''}</span>`))
-            const log = bel`
-            <div class="log">
+            Object.keys(refs).map( (key, i) => refs_info.append(bel`<span aria-label="${refs[key]}">${refs[key]}${i <  Object.keys(refs).length - 1 ? ', ' : ''}</span>`))
+            const log = bel`<div class="log">
                 <div class="head">
                     ${from}
                     ${type_info}
@@ -1367,8 +1396,8 @@ function i_log (protocol, to = 'Test for a long component name / demo / demo.js'
                 ${data_info}
                 ${refs_info}
             </div>`
-            var list = bel`
-            <aside class="list">
+            
+            var list = bel`<aside class="list">
                 ${log}
                 <div class="file">
                     <span>${meta.stack[0]}</span>
@@ -1376,13 +1405,21 @@ function i_log (protocol, to = 'Test for a long component name / demo / demo.js'
                 </div>
             </aside>
             `
-            log_list.append(list)
-            log_list.scrollTop = log_list.scrollHeight
+            logList.append(list)
+            logList.scrollTop = logList.scrollHeight
         } catch (error) {
-            document.addEventListener('DOMContentLoaded', () => log_list.append(list))
+            console.log({error})
+            document.addEventListener('DOMContentLoaded', () => logList.append(list))
             return false
         }
     }
+// ---------------------------------------------------------------
+    style_sheet(shadow, style)
+    content.append(logList)
+    shadow.append(content)
+    document.addEventListener('DOMContentLoaded', () => { logList.scrollTop = logList.scrollHeight })
+
+    return i_log
 }
 
 const style = `
@@ -1531,16 +1568,8 @@ log-list .list:last-child .function {
     color: white;
 }
 `
-},{"bel":4,"message_maker":28,"support-style-sheet":29}],28:[function(require,module,exports){
-module.exports = function message_maker (from) {
-    let msg_id = 0
-    return function make ({to, type, data = null, refs = []}) {
-        const stack = (new Error().stack.split('\n').slice(2).filter(x => x.trim()))
-        const message = { head: [from, to, ++msg_id], refs, type, data, meta: { stack }}
-        return message
-    }
-}
-},{}],29:[function(require,module,exports){
+}).call(this)}).call(this,"/src/index.js")
+},{"bel":4,"message-maker":24,"support-style-sheet":29}],29:[function(require,module,exports){
 module.exports = support_style_sheet
 function support_style_sheet (root, style) {
     return (() => {
