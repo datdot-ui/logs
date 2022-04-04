@@ -25,10 +25,11 @@ function demo () {
         console.log('New message', { msg })
         const { head, refs, type, data, meta } = msg // receive msg
         inbox[head.join('/')] = msg                  // store msg
-        recipients['logs'].notify(msg)
+        const { make: logs_make, address: logs_address, notify: logs_notify } = recipients[logs]
+        logs_notify(logs_make({ to: logs_address, type, data  }))
         const [from] = head
-        const { notify, make, address } = names[from]
-        notify(make({ to: address, type: 'ack', refs: { 'cause': head } }))
+        const { make: from_make, address: from_address, notify: from_notify } = recipients[from]
+        from_notify(from_make({ to: from_address, type: 'ack', refs: { 'cause': head } }))
     }
 // ---------------------------------------------------------------
     let is_checked = false
