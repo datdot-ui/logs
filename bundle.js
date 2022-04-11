@@ -27,10 +27,10 @@ function demo () {
         console.log('New message', { msg })
         const { head, refs, type, data, meta } = msg // receive msg
         inbox[head.join('/')] = msg                  // store msg
-        const { make: logs_make, address: logs_address, notify: logs_notify } = recipients[logs]
+        const { make: logs_make, address: logs_address, notify: logs_notify } = recipients['logs']
         logs_notify(logs_make({ to: logs_address, type, data  }))
         const [from] = head
-        const { make: from_make, address: from_address, notify: from_notify } = recipients[from]
+        const { make: from_make, address: from_address, notify: from_notify } = names[from]
         from_notify(from_make({ to: from_address, type: 'ack', refs: { 'cause': head } }))
     }
 // ---------------------------------------------------------------
