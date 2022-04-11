@@ -1,6 +1,6 @@
 {
   "name": "datdot-ui-logs",
-  "version": "2.0.0",
+  "version": "0.0.0-alpha",
   "description": "Show logs when trigger event via function",
   "main": "src/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fionataeyang/datdot-ui-logs.git"
+    "url": "git+https://github.com/datdot-ui/logs.git"
   },
   "keywords": [
     "widget",
@@ -24,9 +24,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fionataeyang/datdot-ui-logs/issues"
+    "url": "https://github.com/datdot-ui/logs/issues"
   },
-  "homepage": "https://github.com/fionataeyang/datdot-ui-logs#readme",
+  "homepage": "https://github.com/datdot-ui/logs#readme",
   "devDependencies": {
     "browserify": "^17.0.0",
     "budo": "^11.6.4"
